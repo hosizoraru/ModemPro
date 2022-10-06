@@ -39,7 +39,7 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          bash ./gradlew :app:packageRelease
+          bash ./gradlew assemble
 
       - name: Upload release
         uses: actions/upload-artifact@v2
