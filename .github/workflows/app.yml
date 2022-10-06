@@ -2,61 +2,47 @@ name: Android CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    
-    - uses: actions/checkout@v2
-      with:
-        submodules: 'recursive'
-        
-    - name: set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: gradle
-      
-    - uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-          !~/.gradle/caches/build-cache-*
-        key: gradle-deps-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: gradle-deps
+      - uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
 
-    - uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches/build-cache-*
-        key: gradle-builds-${{ github.sha }}
-      
-    - name: Build with Gradle
-      run: |
-        echo ${{ secrets.SIGNING_KEY }} | base64 -d > keystore.jks
-        bash ./gradlew assemble
-      env:
-        KEYSTORE_PATH: "../keystore.jks"
-        KEYSTORE_PASS: ${{ secrets.KEY_STORE_PASSWORD }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: gradle
 
-    - name: Upload release
-      uses: actions/upload-artifact@v2
-      with:
-        name: ModemPro_Release
-        path: "app/build/outputs/apk/release/*.apk"
-        
-    - name: Upload debug
-      uses: actions/upload-artifact@v2
-      with:
-        name: ModemPro_Debug
-        path: "app/build/outputs/apk/debug/*.apk"
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            !~/.gradle/caches/build-cache-*
+          key: gradle-deps-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-deps
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches/build-cache-*
+          key: gradle-builds-${{ github.sha }}
+
+      - name: Build with Gradle
+        run: |
+          bash ./gradlew :app:packageRelease
+
+      - name: Upload release
+        uses: actions/upload-artifact@v2
+        with:
+          name: ModemPro_Release
+          path: "app/build/outputs/apk/release/*.apk"
