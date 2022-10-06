@@ -39,10 +39,22 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          bash ./gradlew :app:packageRelease
+          echo ${{ secrets.SIGNING_KEY }} | base64 -d > keystore.jks
+          bash ./gradlew assemble
+        env:
+          KEYSTORE_PATH: "../keystore.jks"
+          KEYSTORE_PASS: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Upload release
         uses: actions/upload-artifact@v2
         with:
           name: ModemPro_Release
           path: "app/build/outputs/apk/release/*.apk"
+
+      - name: Upload debug
+      uses: actions/upload-artifact@v2
+      with:
+        name: ModemPro_Debug
+        path: "app/build/outputs/apk/debug/*.apk"
