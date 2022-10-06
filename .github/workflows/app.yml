@@ -54,7 +54,7 @@ jobs:
           path: "app/build/outputs/apk/release/*.apk"
 
       - name: Upload debug
-      uses: actions/upload-artifact@v2
-      with:
-        name: ModemPro_Debug
-        path: "app/build/outputs/apk/debug/*.apk"
+        uses: actions/upload-artifact@v2
+        with:
+          name: ModemPro_Debug
+          path: "app/build/outputs/apk/debug/*.apk"
