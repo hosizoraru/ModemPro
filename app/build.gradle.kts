@@ -1,4 +1,3 @@
-import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import java.util.Properties
 
 
@@ -14,16 +13,8 @@ android {
         applicationId = "com.weverses.modempro"
         minSdk = 30
         targetSdk = 33
-        versionCode = 12
-        versionName = "1.2.0"
-    }
-
-    buildTypes {
-        named("release") {
-            isShrinkResources = true
-            isMinifyEnabled = true
-            proguardFiles("proguard-rules.pro")
-        }
+        versionCode = 125
+        versionName = "1.2.5"
     }
 
     val properties = Properties()
@@ -40,6 +31,22 @@ android {
                 keyAlias = alias
                 keyPassword = pwd
                 enableV3Signing = true
+            }
+        }
+    }
+
+    buildTypes {
+        named("release") {
+            isShrinkResources = true
+            isMinifyEnabled = true
+            proguardFiles("proguard-rules.pro")
+            if (keystorePath != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
+        debug {
+            if (keystorePath != null) {
+                signingConfig = signingConfigs.getByName("release")
             }
         }
     }
