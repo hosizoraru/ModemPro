@@ -36,18 +36,10 @@ android {
     }
 
     buildTypes {
-        named("release") {
-            isShrinkResources = true
+        release {
             isMinifyEnabled = true
-            proguardFiles("proguard-rules.pro")
-            if (keystorePath != null) {
-                signingConfig = signingConfigs.getByName("release")
-            }
-        }
-        debug {
-            if (keystorePath != null) {
-                signingConfig = signingConfigs.getByName("release")
-            }
+            isShrinkResources = true
+            setProguardFiles(listOf("proguard-rules.pro"))
         }
     }
 
